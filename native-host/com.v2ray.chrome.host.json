@@ -1,0 +1,7 @@
+{
+  "name": "com.v2ray.chrome.host",
+  "description": "V2 Client native host",
+  "path": "/ABSOLUTE/PATH/TO/v2ray-Extension/native-host/host.py",
+  "type": "stdio",
+  "allowed_origins": ["chrome-extension://YOUR_EXTENSION_ID/"]
+}
