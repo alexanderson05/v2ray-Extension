@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header><h1>V2 Client</h1></header>
+
+  <section class="power">
+    <button id="toggle" class="btn-power" aria-label="اتصال">⏻</button>
+    <div id="status">قطع</div>
+    <div id="active" class="muted">سروری انتخاب نشده</div>
+  </section>
+
+  <section>
+    <h3>سرورها</h3>
+    <ul id="list" class="list"></ul>
+  </section>
+
+  <section>
+    <h3>افزودن کانفیگ</h3>
+    <textarea id="links" placeholder="vless:// vmess:// trojan:// — هر خط یک لینک"></textarea>
+    <button id="addBtn" class="btn">افزودن</button>
+  </section>
+
+  <section>
+    <h3>اشتراک (Subscription)</h3>
+    <input id="subUrl" placeholder="https://...">
+    <div class="row">
+      <button id="addSub" class="btn">افزودن اشتراک</button>
+      <button id="updSub" class="btn ghost">بروزرسانی</button>
+    </div>
+    <ul id="subs" class="list small"></ul>
+  </section>
+
+  <script src="parser.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
