@@ -2,7 +2,9 @@
 """Native messaging host: runs xray-core with a SOCKS5 inbound on 127.0.0.1."""
 import json, os, signal, struct, subprocess, sys, tempfile
 
-XRAY = os.environ.get("XRAY_PATH", "xray")  # مسیر باینری xray-core
+HERE = os.path.dirname(os.path.abspath(__file__))
+_bundled = os.path.join(HERE, "xray.exe" if os.name == "nt" else "xray")
+XRAY = os.environ.get("XRAY_PATH") or (_bundled if os.path.exists(_bundled) else "xray")
 TMP = tempfile.gettempdir()
 CONF = os.path.join(TMP, "v2chrome_xray.json")
 PID_FILE = os.path.join(TMP, "v2chrome_xray.pid")
