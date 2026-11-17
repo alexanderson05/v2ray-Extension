@@ -1,40 +1,159 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
+  <title>V2 Client</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <header><h1>V2 Client</h1></header>
+<div id="app">
 
-  <section class="power">
-    <button id="toggle" class="btn-power" aria-label="اتصال">⏻</button>
-    <div id="status">قطع</div>
-    <div id="active" class="muted">سروری انتخاب نشده</div>
-  </section>
-
-  <section>
-    <h3>سرورها</h3>
-    <ul id="list" class="list"></ul>
-  </section>
-
-  <section>
-    <h3>افزودن کانفیگ</h3>
-    <textarea id="links" placeholder="vless:// vmess:// trojan:// — هر خط یک لینک"></textarea>
-    <button id="addBtn" class="btn">افزودن</button>
-  </section>
-
-  <section>
-    <h3>اشتراک (Subscription)</h3>
-    <input id="subUrl" placeholder="https://...">
-    <div class="row">
-      <button id="addSub" class="btn">افزودن اشتراک</button>
-      <button id="updSub" class="btn ghost">بروزرسانی</button>
+  <header>
+    <canvas id="logo" width="88" height="88"></canvas>
+    <div class="brand">
+      <h1>V2 Client</h1>
+      <div class="credit"><span class="spark">&#10022;</span> Designed by Alex Anderson</div>
     </div>
-    <ul id="subs" class="list small"></ul>
+    <button id="langBtn" class="icon-btn" title="Language">EN</button>
+  </header>
+
+  <!-- ===== boot: helper + core detection ===== -->
+  <section id="screen-boot" class="screen" hidden>
+    <h2 data-i18n="boot_title"></h2>
+    <ul class="steps">
+      <li data-step="helper"><span class="dot"></span><span class="lbl" data-i18n="step_helper"></span><span class="val"></span></li>
+      <li data-step="core"><span class="dot"></span><span class="lbl" data-i18n="step_core"></span><span class="val"></span></li>
+      <li data-step="update"><span class="dot"></span><span class="lbl" data-i18n="step_update"></span><span class="val"></span></li>
+      <li data-step="ready"><span class="dot"></span><span class="lbl" data-i18n="step_ready"></span><span class="val"></span></li>
+    </ul>
+    <div class="bar" id="bootBar" hidden><i></i></div>
+    <div id="bootMsg" class="msg"></div>
+    <div class="row">
+      <button id="bootRetry" class="btn" data-i18n="btn_retry" hidden></button>
+      <button id="bootCopy" class="btn ghost" data-i18n="btn_copy_logs" hidden></button>
+    </div>
+    <div id="readyBox" class="ready" hidden>
+      <div class="check">&#10003;</div>
+      <h3 data-i18n="ready_title"></h3>
+      <p data-i18n="ready_desc"></p>
+      <button id="readyGo" class="btn" data-i18n="btn_continue"></button>
+    </div>
   </section>
 
-  <script src="parser.js"></script>
-  <script src="popup.js"></script>
+  <!-- ===== setup: one-time helper install ===== -->
+  <section id="screen-setup" class="screen" hidden>
+    <h2 data-i18n="setup_title"></h2>
+    <p class="muted" data-i18n="setup_desc"></p>
+    <div id="setupErr" class="msg err" hidden></div>
+    <ol class="how">
+      <li data-i18n="setup_s1"></li>
+      <li data-i18n="setup_s2"></li>
+      <li data-i18n="setup_s3"></li>
+    </ol>
+    <div class="row">
+      <button id="dlSetup" class="btn" data-i18n="btn_download"></button>
+      <button id="dlShow" class="btn ghost" data-i18n="btn_folder" hidden></button>
+    </div>
+    <div class="row"><button id="setupCheck" class="btn ghost" data-i18n="btn_check"></button></div>
+  </section>
+
+  <!-- ===== main ===== -->
+  <section id="screen-main" class="screen" hidden>
+    <div class="hero card">
+      <button id="power" class="power" aria-label="Connect">
+        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="M6.3 6.6a8 8 0 1 0 11.4 0"/></svg>
+      </button>
+      <div id="status" class="status"></div>
+      <div id="active" class="active"></div>
+      <div class="hero-row">
+        <button id="realBtn" class="chip" hidden></button>
+        <span id="realOut" class="real"></span>
+        <span id="uptime" class="uptime"></span>
+      </div>
+      <div class="modes">
+        <button class="chip" data-mode="global" data-i18n="mode_global"></button>
+        <button class="chip" data-mode="bypass-ir" data-i18n="mode_ir"></button>
+      </div>
+    </div>
+
+    <nav class="tabs">
+      <button data-tab="servers" class="on" data-i18n="tab_servers"></button>
+      <button data-tab="add" data-i18n="tab_add"></button>
+      <button data-tab="settings" data-i18n="tab_settings"></button>
+    </nav>
+
+    <div id="tab-servers" class="tab">
+      <div class="toolbar">
+        <input id="search" class="ltr" data-i18n-ph="search">
+        <button id="pingBtn" class="btn small"></button>
+        <button id="sortBtn" class="btn small ghost" title="Sort by ping">&#8645;</button>
+      </div>
+      <p id="emptyHint" class="muted" data-i18n="empty_servers"></p>
+      <ul id="list" class="list"></ul>
+    </div>
+
+    <div id="tab-add" class="tab" hidden>
+      <textarea id="links" class="ltr" data-i18n-ph="add_ph"></textarea>
+      <div class="row">
+        <button id="addBtn" class="btn" data-i18n="add_btn"></button>
+        <button id="pasteBtn" class="btn ghost" data-i18n="paste_btn"></button>
+      </div>
+      <h3 data-i18n="subs_title"></h3>
+      <div id="subs"></div>
+    </div>
+
+    <div id="tab-settings" class="tab" hidden>
+      <label class="fld"><span data-i18n="s_language"></span>
+        <select id="sLang"><option value="fa">فارسی</option><option value="en">English</option></select></label>
+      <label class="fld"><span data-i18n="s_mode"></span>
+        <select id="sMode"><option value="global" data-i18n="mode_global"></option><option value="bypass-ir" data-i18n="mode_ir"></option></select></label>
+      <label class="fld"><span data-i18n="s_port"></span>
+        <input id="sPort" class="ltr" type="number" min="1024" max="65535"></label>
+      <label class="fld col"><span data-i18n="s_bypass"></span>
+        <textarea id="sBypass" class="ltr short" data-i18n-ph="s_bypass_ph"></textarea></label>
+      <label class="fld"><span data-i18n="s_interval"></span>
+        <select id="sInterval"><option value="0" data-i18n="s_off"></option><option value="1">1</option><option value="6">6</option><option value="12">12</option><option value="24">24</option></select></label>
+      <label class="chk"><input id="sAutoConnect" type="checkbox"><span data-i18n="s_autoconnect"></span></label>
+      <label class="chk"><input id="sAutoCore" type="checkbox"><span data-i18n="s_autocore"></span></label>
+      <div class="card info">
+        <div class="k" data-i18n="s_versions"></div>
+        <div id="vers" class="ltr"></div>
+        <div class="row">
+          <button id="coreCheck" class="btn small" data-i18n="s_check_core"></button>
+          <button id="rerun" class="btn small ghost" data-i18n="s_rerun"></button>
+        </div>
+        <div id="coreMsg" class="muted"></div>
+      </div>
+      <button id="resetBtn" class="btn danger" data-i18n="s_reset"></button>
+      <div class="about card">
+        <div class="k" data-i18n="s_about"></div>
+        <div class="big">V2 Client <span id="verTag"></span></div>
+        <div class="credit lg"><span class="spark">&#10022;</span> Designed by Alex Anderson</div>
+        <a href="https://github.com/alexanderson05/v2ray-Extension" target="_blank" rel="noopener">github.com/alexanderson05/v2ray-Extension</a>
+      </div>
+    </div>
+  </section>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <!-- ===== log drawer (always visible) ===== -->
+  <footer class="logbar">
+    <div id="logToggle" class="logbar-head">
+      <span><b id="logArrow">&#9656;</b> <b data-i18n="logs"></b> <em id="logCount">0</em></span>
+      <span class="logbtns">
+        <button id="logCopy" data-i18n="copy"></button>
+        <button id="logCore" data-i18n="core_log"></button>
+        <button id="logClear" data-i18n="clear"></button>
+      </span>
+    </div>
+    <div id="logBody" class="logbody" hidden></div>
+  </footer>
+</div>
+
+<script src="i18n.js"></script>
+<script src="common.js"></script>
+<script src="parser.js"></script>
+<script src="logo.js"></script>
+<script src="popup.js"></script>
 </body>
 </html>
