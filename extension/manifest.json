@@ -1,9 +1,12 @@
 {
   "manifest_version": 3,
   "name": "V2 Client",
-  "version": "1.0.0",
-  "description": "V2Ray/Xray client for Chrome",
-  "permissions": ["storage", "proxy", "nativeMessaging"],
+  "version": "2.0.0",
+  "version_name": "2.0.0-beta.1",
+  "description": "V2Ray / Xray client for Chrome. Designed by Alex Anderson.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4Hx/PbgiD+EZtLGXlS8FDrcj2NBByQ5SPc0jykQOl/svaMTZTFfd1zhcMJEBRDdsIek1Uh6CFEbkStJac65p6O6vUZjsyC6TyYM6i13Nv6Zbkh0jO64ZVsAtc9CX9fAQNxsWE5L4XPCsZ17gINTAxsV0fxKMCF3O1bRljkjv/D1iayHg+VA+RNxk8xLSOOiYEU54JzPcnqHJnQnkY/9Ooe5vfTOjvQtrd5racnm7e49Koz7PUS5h0L9WW3FZq9QvBCxs5Z8Ak+rXMZHSJrP/fzJCHgAP2Qu3Wa9zw3zAYrHFTtUJYVrGzONaVxy7oW4juY19NAY1PingeM1qyUvF/QIDAQAB",
+  "minimum_chrome_version": "110",
+  "permissions": ["storage", "proxy", "nativeMessaging", "downloads", "alarms", "clipboardRead"],
   "host_permissions": ["<all_urls>"],
   "background": { "service_worker": "background.js" },
   "action": { "default_popup": "popup.html", "default_title": "V2 Client" }
