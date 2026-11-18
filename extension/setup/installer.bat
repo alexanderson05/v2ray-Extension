@@ -11,6 +11,7 @@ exit /b
 # It (1) writes the helper script, (2) makes sure Python is available,
 # (3) tells Chrome where the helper is. Nothing is installed system-wide.
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $ExtId = '@@EXT_ID@@'
